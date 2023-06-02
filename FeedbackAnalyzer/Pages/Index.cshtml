@@ -1,0 +1,283 @@
+﻿@page
+@using Newtonsoft.Json
+@model Prediction.Pages.IndexModel
+@{
+    string predictedResult = Model.DataSource.StudentPerformanceDetails.Where(x => x.IsPredictedResult).Select(x => $"{x.Year}, Semester - {x.Semester}").FirstOrDefault();
+    ViewData["Title"] = "Dashboard";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/img/favicon.png">
+    <title>
+        Black Dashboard by Creative Tim
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="~/css/nucleo-icons.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="~/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="~/css/demo.css" rel="stylesheet" />
+</head>
+<body class="">
+    <div class="wrapper">
+        <div class="main-panel">
+            <!-- Navbar -->
+            <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <i class="tim-icons icon-simple-remove"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Navbar -->
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="icon-left text-secondary"><i class="ti-bar-chart"></i></div>
+                                <div class="number-right text-right">
+                                    <h6 class="bold text-secondary">Positive feedback</h6>
+                                    <h3 class="card-title text-warning bold">@Model.DataSource.PositiveFeedbackCount</h3>
+                                </div>
+                                <div class="progress progress-bar-sm">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: @Model.DataSource.PositiveFeedbackPercent%" aria-valuenow="@Model.DataSource.PositiveFeedbackPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="progress-text text-secondary">
+                                    <span class="float-right"><small>@Model.DataSource.PositiveFeedbackPercent%</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="icon-left text-secondary"><i class="ti-receipt"></i></div>
+                                <div class="number-right text-right">
+                                    <h6 class="bold text-secondary">Negative feedback</h6>
+                                    <h3 class="card-title text-primary bold">@Model.DataSource.NegativeFeedbackCount</h3>
+                                </div>
+                                <div class="progress progress-bar-sm">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.DataSource.NegativeFeedbackPercent%" aria-valuenow="@Model.DataSource.NegativeFeedbackPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="progress-text text-secondary">
+                                    <span class="float-right"><small>@Model.DataSource.NegativeFeedbackPercent%</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="icon-left text-secondary"><i class="ti-wallet"></i></div>
+                                <div class="number-right text-right">
+                                    <h6 class="bold text-secondary">Average feedback</h6>
+                                    <h3 class="card-title text-bubblegum bold">@Model.DataSource.AverageFeedbackCount</h3>
+                                </div>
+                                <div class="progress progress-bar-sm">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-bubblegum" role="progressbar" style="width: @Model.DataSource.AverageFeedbackPercent%" aria-valuenow="@Model.DataSource.AverageFeedbackPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="progress-text text-secondary">
+                                    <span class="float-right"><small>@Model.DataSource.AverageFeedbackPercent%</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-chart">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="tim-icons icon-delivery-fast text-info"></i> Report</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="CountryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card ">
+                            <div class="card-header">
+                                <h4 class="card-title"> Simple Table</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table tablesorter " id="">
+                                        <thead class=" text-primary">
+                                            <tr>
+                                                @foreach(var title in Model.DataSource.NewTableHeaders)
+                                                {
+                                                    <th>
+                                                        @title
+                                                    </th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach (var data in Model.DataSource.Feedbacks)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @data.DateTime
+                                                    </td>
+                                                    <td class="@(data.ExperienceInParking.Intent)">
+                                                        @data.ExperienceInParking.Value
+                                                    </td>
+                                                    <td class="@(data.ExperienceInParking.Intent)">
+                                                        @data.ExperienceInDining.Value
+                                                    </td>
+                                                    <td class="@(data.ExperienceInParking.Intent)">
+                                                        @data.ExperienceWithWaiter.Value
+                                                    </td>
+                                                    <td class="@(data.ExperienceInParking.Intent)">
+                                                        @data.HowWasFood.Value
+                                                    </td>
+                                                    <td class="@(data.ExperienceInParking.Intent)">
+                                                        @data.HowIsPriceRange.Value
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script src="~/js/core/jquery.min.js"></script>
+    <script src="~/js/core/popper.min.js"></script>
+    <script src="~/js/core/bootstrap.min.js"></script>
+    <script src="~/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!--  Google Maps Plugin    -->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+    <!-- Chart JS -->
+    <script src="~/js/plugins/chartjs.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="~/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="~/js/black-dashboard.min.js?v=1.0.0"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+    <script src="~/js/demo.js"></script>
+    <script>
+        
+        var semesters = @Html.Raw(Json.Serialize(Model.DataSource.Semesters));
+        var semesterResults = @Html.Raw(Json.Serialize(Model.DataSource.SemesterResults));
+
+        var feedbackCategories = @Html.Raw(Json.Serialize(Model.DataSource.FeedbackCategories));
+        var feedbackCategoriesResult = @Html.Raw(Json.Serialize(Model.DataSource.FeedbackCategoriesResult));
+
+        $(document).ready(function () {
+            $().ready(function () {
+                $sidebar = $('.sidebar');
+                $navbar = $('.navbar');
+                $main_panel = $('.main-panel');
+
+                $full_page = $('.full-page');
+
+                $sidebar_responsive = $('body > .navbar-collapse');
+                sidebar_mini_active = true;
+                white_color = false;
+
+                window_width = $(window).width();
+
+                fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+                $('.switch-sidebar-mini input').on("switchChange.bootstrapSwitch", function () {
+                    var $btn = $(this);
+
+                    if (sidebar_mini_active == true) {
+                        $('body').removeClass('sidebar-mini');
+                        sidebar_mini_active = false;
+                        blackDashboard.showSidebarMessage('Sidebar mini deactivated...');
+                    } else {
+                        $('body').addClass('sidebar-mini');
+                        sidebar_mini_active = true;
+                        blackDashboard.showSidebarMessage('Sidebar mini activated...');
+                    }
+
+                    // we simulate the window Resize so the charts will get updated in realtime.
+                    var simulateWindowResize = setInterval(function () {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 180);
+
+                    // we stop the simulation of Window Resize after the animations are completed
+                    setTimeout(function () {
+                        clearInterval(simulateWindowResize);
+                    }, 1000);
+                });
+
+                $('.switch-change-color input').on("switchChange.bootstrapSwitch", function () {
+                    var $btn = $(this);
+
+                    if (white_color == true) {
+
+                        $('body').addClass('change-background');
+                        setTimeout(function () {
+                            $('body').removeClass('change-background');
+                            $('body').removeClass('white-content');
+                        }, 900);
+                        white_color = false;
+                    } else {
+
+                        $('body').addClass('change-background');
+                        setTimeout(function () {
+                            $('body').removeClass('change-background');
+                            $('body').addClass('white-content');
+                        }, 900);
+
+                        white_color = true;
+                    }
+
+
+                });
+
+                $('.light-badge').click(function () {
+                    $('body').addClass('white-content');
+                });
+
+                $('.dark-badge').click(function () {
+                    $('body').removeClass('white-content');
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Javascript method's body can be found in assets/js/demos.js
+            demo.initDashboardPageCharts();
+
+        });
+    </script>
+    <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+    <script>
+        window.TrackJS &&
+            TrackJS.install({
+                token: "ee6fab19c5a04ac1a32a645abde4613a",
+                application: "black-dashboard-free"
+            });
+    </script>
+</body>
+
+</html>

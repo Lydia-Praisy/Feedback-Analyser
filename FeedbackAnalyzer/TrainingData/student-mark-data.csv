@@ -1,0 +1,10 @@
+year,semester,subject_code,total_students,students_appeared_for_exam,number_of_iats,number_of_classes,attendance_percentage,pass_percentage
+2018,2,ABC124,51,56,3,100,80,70
+2019,1,ABC125,52,50,3,100,80,80
+2019,2,ABC126,53,55,3,126,80,61
+2020,1,ABC127,54,55,3,126,80,90
+2020,2,ABC128,55,55,3,126,80,27
+2021,1,ABC129,56,55,3,126,80,78
+2021,2,ABC133,57,55,3,126,80,56
+2022,1,ABC143,58,55,3,126,80,45
+2022,2,ABC153,59,55,3,126,80,97

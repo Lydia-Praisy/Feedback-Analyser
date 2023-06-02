@@ -1,0 +1,45 @@
+﻿@page
+@model Prediction.Pages.HomeModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="performance">
+    <h2 class="active"> Fill current semester performance </h2>
+    <form method="post" asp-page="Home">
+        <input type="text" class="text" name="Year" asp-for="@Model.StudentPerformanceViewModel.Year">
+        <span>Year</span>
+        <br>
+        <br>
+        <input type="text" class="text" name="Semester" asp-for="@Model.StudentPerformanceViewModel.Semester">
+        <span>Semester</span>
+        <br>
+        <br>
+        <input type="text" class="text" name="SubjectCode" asp-for="@Model.StudentPerformanceViewModel.SubjectCode">
+        <span>Subject Code</span>
+        <br>
+        <br>
+        <input type="text" class="text" name="TotalStudents" asp-for="@Model.StudentPerformanceViewModel.TotalStudents">
+        <span>Total Students</span>
+        <br>
+        <br>
+        <input type="text" class="text" name="AttendanceRatio" asp-for="@Model.StudentPerformanceViewModel.AttendanceRatio">
+        <span>Attendance Ratio</span>
+        <br>
+        <br>
+        <input type="text" class="text" name="NumberOfClassesRatio" asp-for="@Model.StudentPerformanceViewModel.NumberOfClassesRatio">
+        <span>Number Of Classes Ratio</span>
+        <br>
+        <br>
+        <input type="text" class="text" name="NumberOfIatsRatio" asp-for="@Model.StudentPerformanceViewModel.NumberOfIatsRatio">
+        <span>Number Of IATs Ratio</span>
+        <br>
+        <br>
+        <input type="text" class="text" name="StudentsAppearedForExamRatio" asp-for="@Model.StudentPerformanceViewModel.StudentsAppearedForExamRatio">
+        <span>Students Appeared For Exam Ratio</span>
+        <br>
+        <br>
+        <hr>
+        <button class="signin" asp-page-handler="StudentPerformance">Predict Pass Percent</button>
+    </form>
+</div>
